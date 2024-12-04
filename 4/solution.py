@@ -70,35 +70,23 @@ print(res)
 
 # Part 2
 
-# extract all 3x3 squares from the data
-squares = []
-for i in range(len(data)):
-  for j in range(len(data[i])):
-    if i + 2 < len(data) and j + 2 < len(data[i]):
-      squares.append([data[i][j], data[i][j+1], data[i][j+2], data[i+1][j], data[i+1][j+1], data[i+1][j+2], data[i+2][j], data[i+2][j+1], data[i+2][j+2]])
+def is_valid_square(data, i, j):
+    # skip if center is not A    
+    if data[i][j] != "A":
+      return False
+    square = [data[i - 1][j - 1], data[i - 1][j + 1], data[i + 1][j - 1], data[i + 1][j + 1]]
+    return (
+      (square[0] == "M" and square[1] == "M" and square[2] == "S" and square[3] == "S")
+      or (square[0] == "S" and square[1] == "S" and square[2] == "M" and square[3] == "M")
+      or (square[0] == "M" and square[1] == "S" and square[2] == "M" and square[3] == "S")
+      or (square[0] == "S" and square[1] == "M" and square[2] == "S" and square[3] == "M")
+    )
 
-def is_valid_square(square):
-  if square[4] != "A":
-    return False
-
-  if square[0] == "M" and square[2] == "M" and square[6] == "S" and square[8] == "S":
-    return True
-
-  if square[0] == "S" and square[2] == "S" and square[6] == "M" and square[8] == "M":
-    return True
-
-  if square[0] == "M" and square[2] == "S" and square[6] == "M" and square[8] == "S":
-    return True
-
-  if square[0] == "S" and square[2] == "M" and square[6] == "S" and square[8] == "M":
-    return True
-
-  return False
-
+# Conta i quadrati validi
 res = 0
-
-for square in squares:
-  if is_valid_square(square):
-    res += 1
+for i in range(1, len(data) - 1):
+    for j in range(1, len(data[i]) - 1):
+        if is_valid_square(data, i, j):
+            res += 1
 
 print(res)
