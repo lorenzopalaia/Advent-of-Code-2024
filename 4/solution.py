@@ -71,22 +71,21 @@ print(res)
 # Part 2
 
 def is_valid_square(data, i, j):
-    # skip if center is not A    
-    if data[i][j] != "A":
-      return False
-    square = [data[i - 1][j - 1], data[i - 1][j + 1], data[i + 1][j - 1], data[i + 1][j + 1]]
-    return (
-      (square[0] == "M" and square[1] == "M" and square[2] == "S" and square[3] == "S")
-      or (square[0] == "S" and square[1] == "S" and square[2] == "M" and square[3] == "M")
-      or (square[0] == "M" and square[1] == "S" and square[2] == "M" and square[3] == "S")
-      or (square[0] == "S" and square[1] == "M" and square[2] == "S" and square[3] == "M")
-    )
+  # skip if center is not A    
+  if data[i][j] != "A":
+    return False
+  square = [data[i - 1][j - 1], data[i - 1][j + 1], data[i + 1][j - 1], data[i + 1][j + 1]]
+  return (
+    (square[0] == "M" and square[1] == "M" and square[2] == "S" and square[3] == "S")
+    or (square[0] == "S" and square[1] == "S" and square[2] == "M" and square[3] == "M")
+    or (square[0] == "M" and square[1] == "S" and square[2] == "M" and square[3] == "S")
+    or (square[0] == "S" and square[1] == "M" and square[2] == "S" and square[3] == "M")
+  )
 
-# Conta i quadrati validi
 res = 0
 for i in range(1, len(data) - 1):
-    for j in range(1, len(data[i]) - 1):
-        if is_valid_square(data, i, j):
-            res += 1
+  for j in range(1, len(data[i]) - 1):
+    if is_valid_square(data, i, j):
+      res += 1
 
 print(res)
