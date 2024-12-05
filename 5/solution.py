@@ -31,3 +31,25 @@ for order in orders:
     res += order[len(order)//2]
 
 print(res)
+
+# * Part 2
+
+# Filter the invalid orders
+invalid_orders = [order for order in orders if not check_order(order, dependencies)]
+
+def reorder(order, dependencies):
+  for i in range(len(order)):
+    for j in range(i+1, len(order)):      
+      if order[j] in dependencies and order[i] in dependencies[order[j]]:
+        # Swap the elements
+        order[i], order[j] = order[j], order[i]
+  return order
+
+invalid_orders = [reorder(order, dependencies) for order in invalid_orders]
+
+res = 0
+
+for order in invalid_orders:
+  res += order[len(order)//2]
+
+print(res)
