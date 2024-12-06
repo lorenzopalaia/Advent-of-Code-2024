@@ -11,11 +11,14 @@ orders = [list(map(int, order.split(","))) for order in orders]
 # * Part 1
 
 # Create a dictionary with the dependencies where the key is the first element and the value is a list of the second elements
+# ! This is a directed acyclic graph (DAG)
 dependencies = {}
 for rule in rules:
   if rule[0] not in dependencies:
     dependencies[rule[0]] = []  
-  dependencies[rule[0]].append(rule[1])  
+  dependencies[rule[0]].append(rule[1])
+
+# TODO: filter dependencies based on the numbers inside the orders list
 
 def check_order(order, dependencies):
   for i in range(len(order)):
