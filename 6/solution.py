@@ -19,6 +19,11 @@ def find_guard(data):
   return None
 
 # * Part 1
+
+# ! IDEA: iterate until we go out of bounds
+# ! If we hit a wall, turn 90 degrees to the right, rotation is performed by swapping dx and dy and negating one of them
+# ! Use a set to keep track of unique visited cells
+
 START = find_guard(data)
 visited = set()
 x, y = START
@@ -39,6 +44,14 @@ while is_inbounds(x, y, data):
 print(len(visited) - 1)  # Subtract 1 to exclude the starting position
 
 # * Part 2
+
+# ! IDEA: For each cell in the visited set (excluding the starting position), place an obstacle and restart the simulation.
+# ! Track the positions and directions visited during the simulation.
+# ! If a state (position and direction) is seen again, it indicates a loop.
+# ! Count the number of loops detected.
+
+# TODO: Improve the solution performance
+
 loops = 0
 
 for obs_x, obs_y in visited - {START}:
