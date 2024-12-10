@@ -56,3 +56,34 @@ for i in range(n):
     tot += get_score(i, j)
 
 print(tot)
+
+# * Part 2
+
+# ! IDEA: use a recursive approach to count the paths
+# ! Starting from each 0, recursively calculate the rating of each cell
+# ! The rating of a cell is the sum of the ratings of the subsequent cells (+1)
+# ! A cell with 9 has a rating of 1, being the endpoint
+
+def get_rating(i, j):
+  if data[i][j] == "9":
+    return 1
+  
+  tot = 0
+  for di, dj in directions:
+    next_i, next_j = i + di, j + dj
+
+    if not is_inbound(next_i, next_j):
+      continue
+  
+    if int(data[next_i][next_j]) == int(data[i][j]) + 1:
+      tot += get_rating(next_i, next_j)
+
+  return tot
+
+tot = 0
+for i in range(n):
+  for j in range(n):
+    if data[i][j] == "0":
+      tot += get_rating(i, j)
+
+print(tot)
