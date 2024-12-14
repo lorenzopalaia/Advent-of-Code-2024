@@ -35,11 +35,46 @@ def count_by_quadrant(positions):
     return quadrant_counts
 
 
+def find_easter_egg(positions, velocities):
+    lines = [set((x, y) for x in range(max_x)) for y in range(max_y)]
+
+    for step in range(max_x * max_y):
+        robot_positions = set(simulate_robot(position, velocity, step)
+                              for position, velocity in zip(positions, velocities))
+        max_line, y = max((len(robot_positions & line), y)
+                          for y, line in enumerate(lines))
+
+        if max_line >= 30:
+            contiguous = 0
+            for x in range(max_x):
+                if (x, y) in robot_positions:
+                    contiguous += 1
+                else:
+                    contiguous = 0
+                if contiguous == 30:
+                    return step
+
+
 # * Part 1
+
+# ! IDEA: simulate robot movement with the law of physics
+# ! robots move by uniform linear motion so we can use the formula
+# ! position = initial_position + velocity * time
+# ! we can handle the wrapping around the grid by using modulo operator
+
 final_positions = [simulate_robot(position, velocity, 100)
                    for position, velocity in zip(positions, velocities)]
 quadrant_counts = count_by_quadrant(final_positions)
 
 res = quadrant_counts[0] * quadrant_counts[1] * \
     quadrant_counts[2] * quadrant_counts[3]
+print(res)
+
+# * Part 2
+
+# ! IDEA: find the first step where robots are creating a tree shape
+# ! we can reduce computation by checking only the line where we have at least 30 robots aligned
+# ! we can find the line by counting the number of robots in each line
+
+res = find_easter_egg(positions, velocities)
 print(res)
