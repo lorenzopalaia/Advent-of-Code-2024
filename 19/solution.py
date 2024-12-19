@@ -41,3 +41,37 @@ def solve(design, patterns):
 
 res = sum(solve(design, patterns) for design in designs)
 print(res)
+
+
+# * Part 2
+
+# ! IDEA: Dynamic Programming
+# ! If a pattern matches, we can add the number of ways to form the
+# ! remaining string to the total number of ways to form the substring
+# ! starting at the current position.
+# ! We will store this information in a dp array.
+
+
+def count_combinations(design, patterns):
+    n = len(design)
+    # dp[i] represents the number of ways to form the substring from i to the end
+    dp = [0] * (n + 1)
+    # Empty string has 1 way to be formed
+    dp[n] = 1
+
+    # Work backwards from the end of the string
+    for i in range(n-1, -1, -1):
+        total = 0
+        for pattern in patterns:
+            # Check if pattern matches at the current position
+            if (i + len(pattern) <= n and
+                    design[i:i+len(pattern)] == pattern):
+                # Add the number of ways to form the remaining string
+                total += dp[i + len(pattern)]
+        dp[i] = total
+
+    return dp[0]
+
+
+res = sum(count_combinations(design, patterns) for design in designs)
+print(res)
