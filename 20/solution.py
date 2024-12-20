@@ -1,9 +1,5 @@
 from itertools import combinations
 
-# * Part 1
-
-# ! IDEA: Flood fill the grid to get all distances from the start position
-
 with open("20/data.txt", "r") as file:
     data = file.read().strip()
 
@@ -25,12 +21,20 @@ for cur_pos in pos_to_process:
             dists[new_pos] = dists[cur_pos] + 1
             pos_to_process.append(new_pos)
 
-res = 0
+res_1 = 0
+res_2 = 0
 
 # Check all combinations of positions and their distances
 for (pos1, dist1), (pos2, dist2) in combinations(dists.items(), 2):
     manhattan_dist = abs((pos1 - pos2).real) + abs((pos1 - pos2).imag)
+    # * Part 1
+    # ! IDEA: Flood fill the grid to get all distances from the start position
     if manhattan_dist == 2 and dist2 - dist1 - manhattan_dist >= 100:
-        res += 1
+        res_1 += 1
+    # * Part 2
+    # ! IDEA: Check pairs of points with Manhattan distance 2 or up to 20 and count valid pairs
+    if manhattan_dist < 21 and dist2 - dist1 - manhattan_dist >= 100:
+        res_2 += 1
 
-print(res)
+print(res_1)
+print(res_2)
