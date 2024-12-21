@@ -65,3 +65,7 @@ def compute_complexity(code, num_keypads):
 # * Part 1
 res = sum(compute_complexity(code, 1 + 2 + 1) for code in codes)
 print(res)
+
+# * Part 2
+res = sum(compute_complexity(code, 1 + 25 + 1) for code in codes)
+print(res)
