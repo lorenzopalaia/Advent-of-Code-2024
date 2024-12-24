@@ -160,6 +160,65 @@ class Circuit:
         self.registers['y'].value = y
         return self.registers['z'].value
 
+    def fix_gate(self, wire, reference):
+        if wire.gate == reference:
+            return
+
+        actual_wire = self.gates.get(reference)
+        if actual_wire is None:
+            # Maybe the gate is fine but one of the inputs is wrong.
+            # If so, fix the other input.
+            assert type(wire.gate) is type(reference)
+            # print(f'{wire.name} is {wire.gate} but should be {reference}!')
+
+            if wire.gate.input_a == reference.input_a:
+                return self.fix_gate(wire.gate.input_b, reference.input_b.gate)
+            elif wire.gate.input_a == reference.input_b:
+                return self.fix_gate(wire.gate.input_b, reference.input_a.gate)
+            elif wire.gate.input_b == reference.input_a:
+                return self.fix_gate(wire.gate.input_a, reference.input_b.gate)
+            elif wire.gate.input_b == reference.input_b:
+                return self.fix_gate(wire.gate.input_a, reference.input_a.gate)
+            else:
+                assert False
+
+        # print(f'{wire.name} is {wire.gate} but should be {reference}! Swapping with {actual_wire.name}')
+        wire.gate, actual_wire.gate = actual_wire.gate, wire.gate
+
+        self.gates[wire.gate] = wire
+        self.gates[actual_wire.gate] = actual_wire
+        # print(f'  {wire.name} is now {wire.gate}')
+        # print(f'  {actual_wire.name} is now {actual_wire.gate}')
+        self.bad_wires.append(wire)
+        self.bad_wires.append(actual_wire)
+        return wire
+
+    def fix_adder(self, in_reg_a, in_reg_b, out_reg):
+        gates = self.gates
+        prev_in_a = None
+        prev_in_b = None
+        prev_in_carry = None
+
+        for i, (in_a, in_b) in enumerate(zip(in_reg_a.wires, in_reg_b.wires)):
+            out = out_reg.wires[i]
+            in_xor = gates[in_a ^ in_b]
+            in_carry = None
+
+            if i == 0:
+                assert in_xor is out
+            elif i == 1:
+                in_carry = gates[prev_in_a & prev_in_b]
+                self.fix_gate(out, in_xor ^ in_carry)
+            else:
+                # These must exist
+                temp = gates[gates[prev_in_a ^ prev_in_b] & prev_in_carry]
+                in_carry = gates[temp | gates[prev_in_a & prev_in_b]]
+                self.fix_gate(out, in_xor ^ in_carry)
+
+            prev_in_a = in_a
+            prev_in_b = in_b
+            prev_in_carry = in_carry
+
 
 circuit = Circuit()
 
@@ -176,4 +235,14 @@ y = circuit.registers['y']
 z = circuit.registers['z']
 
 res = z.value
+print(res)
+
+# * Part 2
+
+# ! IDEA: Fix the adder circuit by ensuring that the gates and wires are correctly connected.
+# ! Identify and fix any incorrect gates in the circuit and print the names of the bad wires.
+
+circuit.fix_adder(x, y, z)
+
+res = ','.join(sorted(wire.name for wire in circuit.bad_wires))
 print(res)
